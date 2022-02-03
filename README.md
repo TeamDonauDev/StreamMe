@@ -2,6 +2,7 @@
 
 ## Collection Setup
 
+```
 {
     "$id": "61fbdfde4caa51aa6bae",
     "$read": [],
@@ -73,3 +74,4 @@
     ],
     "indexes": []
 }
+```
