@@ -4,6 +4,15 @@
 
 Project ID: 61fbddf04ca11fd9cf40
 
+## Package Name
+
+name = de.teamdonaudev.streamme
+
+## Testuser
+
+TestAdmin admin@admin.de adminadmin
+TestUser user@user.de useruser
+
 ## Collection Setup
 
 ```
