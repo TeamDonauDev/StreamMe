@@ -10,8 +10,8 @@ name = de.teamdonaudev.streamme
 
 ## Testuser
 
-TestAdmin admin@admin.de adminadmin
-TestUser user@user.de useruser
+- TestAdmin admin@admin.de adminadmin
+- TestUser user@user.de useruser
 
 ## Collection Setup
 
