@@ -9,7 +9,7 @@ import 'package:stream_me_app/SystemWideLoadingPage.dart';
 
 import 'net_config.dart' as net;
 
-bool isInTestState = true;
+bool isInTestState = false;
 
 void main() {
   runApp(const MyApp());
@@ -35,13 +35,17 @@ class MyApp extends StatelessWidget {
           return MaterialApp(
               title: 'Flutter Demo',
               theme: ThemeData.dark(),
-              home: MyHomePage(title: "Hi Title", client: client,));
+              home: MyHomePage(
+                title: "Hi Title",
+                client: client,
+              ));
         });
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title, required this.client}) : super(key: key);
+  const MyHomePage({Key? key, required this.title, required this.client})
+      : super(key: key);
 
   final String title;
   final Client client;
@@ -61,18 +65,18 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-
     Database database = Database(widget.client);
 
-    return Consumer<AccountStore>(builder: (context, loginStore, child) {
-      print("IS_LOADING: " + loginStore.isLoading.toString());
-      print("IS_LOGGED_IN: " + loginStore.isLoggedIn.toString());
-      if (loginStore.isLoggedIn) {
+    return Consumer<AccountStore>(builder: (context, accountStore, child) {
+      if (accountStore.isLoggedIn) {
         return Scaffold(
-          appBar: AppBar(
-            title: Text(widget.title),
-          ),
-          body: [FeedPage(database: database), AccountPage()][_pageIndex],
+          body: [
+            FeedPage(database: database),
+            AccountPage(
+              database: database,
+              accountStore: accountStore,
+            )
+          ][_pageIndex],
           bottomNavigationBar: BottomNavigationBar(
             currentIndex: _pageIndex,
             selectedItemColor: Colors.blue,
@@ -87,14 +91,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 label: 'Account',
               )
             ],
-          ),
-          floatingActionButton: FloatingActionButton(onPressed: () => loginStore.logout(),),
+          )
         );
       }
-      if (loginStore.isLoading) {
+      if (accountStore.isLoading) {
         return const SystemWideLoadingPage(title: "Still loading");
       }
-      return LoginPageWidget(loginStore: loginStore);
+      return LoginPageWidget(loginStore: accountStore);
     });
   }
 }

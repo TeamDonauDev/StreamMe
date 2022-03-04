@@ -18,7 +18,7 @@ class _LoginPageState extends State<LoginPageWidget> {
   @override
   void initState() {
     super.initState();
-    _unameController = TextEditingController(text: "testuser@user.de");
+    _unameController = TextEditingController(text: "user@user.de");
     _pwController = TextEditingController(text: "useruser");
   }
 

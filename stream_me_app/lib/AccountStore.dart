@@ -7,7 +7,9 @@ class AccountStore extends ChangeNotifier {
   Client client;
   bool _isLoggedIn = false;
   bool _isLoading = true;
-  Session? user;
+  Session? session;
+  User? user;
+  Account? account;
 
   AccountStore({required this.client});
 
@@ -20,6 +22,7 @@ class AccountStore extends ChangeNotifier {
   }
 
   AccountStore init(bool isInTestState) {
+    account = Account(client);
     if (!isInTestState) {
       _checkIsLoggedIn();
     } else {
@@ -28,13 +31,15 @@ class AccountStore extends ChangeNotifier {
     return this;
   }
 
-  login(String email, String password) async {
+  login(String email, String password) {
     _isLoading = true;
     notifyListeners();
-    Account(client)
-        .createSession(email: email, password: password)
-        .then((session) {
-      user = session;
+    account
+        ?.createSession(email: email, password: password)
+        .then((session) async {
+      this.session = session;
+      user = await account?.get();
+      print(user);
       _isLoggedIn = true;
     }).whenComplete(() {
       _isLoading = false;
@@ -43,21 +48,23 @@ class AccountStore extends ChangeNotifier {
   }
 
   _checkIsLoggedIn() async {
-    Account account = Account(client);
     account
-        .get()
-        .then((value) => _isLoggedIn = true)
+        ?.get()
+        .then((user) async {
+          _isLoggedIn = true;
+          this.user = user;
+        })
         .catchError((_) => _isLoggedIn = false)
         .whenComplete(() {
-      _isLoading = false;
-      notifyListeners();
-    });
+          _isLoading = false;
+          notifyListeners();
+        });
   }
 
   logout() {
     _isLoading = true;
-    Account(client)
-        .deleteSessions()
+    account
+        ?.deleteSessions()
         .then((_) => _isLoggedIn = false)
         .catchError((_) {})
         .whenComplete(() {
